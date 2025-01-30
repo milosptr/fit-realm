@@ -6,6 +6,7 @@ import { SelectPicker } from '@/src/components/ui/picker/SelectPicker'
 import { GoalsListItem } from '@/src/types/constantTypes'
 import { goalOptions } from '@/src/constants/goals'
 import { SelectOption } from '@/src/types/componentTypes'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 type Props = {
   goal: GoalsListItem
@@ -13,6 +14,7 @@ type Props = {
 }
 
 export const GoalItem = ({ goal, setValue }: Props) => {
+  const colors = useThemeColor()
   const [edit, setEdit] = useState(false)
   const options = goalOptions[goal.key].map((o) => {
     return {
@@ -22,7 +24,7 @@ export const GoalItem = ({ goal, setValue }: Props) => {
   })
 
   return (
-    <View style={styles.goalItem}>
+    <View style={[styles.goalItem, { borderColor: colors.tabsBorder }]}>
       <ThemedText>{goal.title}</ThemedText>
       <Pressable onPress={() => setEdit(true)}>
         <ThemedText
@@ -52,7 +54,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     paddingVertical: 12,
     paddingHorizontal: 4,
   },

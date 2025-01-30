@@ -2,9 +2,9 @@ import { StyleSheet, View, ViewProps } from 'react-native'
 import { PieChart } from 'react-native-gifted-charts'
 import { ThemedText } from '@/src/components/ThemedText'
 import theme from '@/src/constants/theme'
-import { useColorScheme } from '@/src/hooks/useColorScheme'
 import { goalIcon } from '@/src/constants/goals'
 import { Goals } from '@/src/constants/goals'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 type Props = {
   viewProps?: ViewProps
@@ -29,9 +29,9 @@ export const ProgressCard = ({
     { value: 100 - percentage, color: theme.colors.primaryLightest },
   ]
 
-  const colorScheme = useColorScheme()
+  const colors = useThemeColor()
   const bgColor = {
-    backgroundColor: theme.colors[colorScheme ?? 'light'].card,
+    backgroundColor: colors.card,
   }
 
   const GoalIcon = goalIcon(goalKey)
@@ -48,7 +48,7 @@ export const ProgressCard = ({
           </View>
           <View style={styles.valueContainer}>
             <ThemedText weight={'bold'} size={'lg'}>
-              {value}
+              {Math.round(value)}
             </ThemedText>
             <ThemedText weight={'medium'} size={'lg'}>
               / {goal}

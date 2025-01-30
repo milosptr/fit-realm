@@ -8,15 +8,16 @@ import {
   getWater,
   getWeight,
 } from '@/src/services/healthServices'
+import { QueryKey } from '@/src/constants/queryKey'
 
-export const useGetAllHealthData = (startDate?: string, endDate?: string) => {
+export const useGetAllHealthData = (startDate?: Date, endDate?: Date) => {
   const activeTime = useGetActiveTime(startDate, endDate)
   const calories = useGetCalories(startDate, endDate)
   const steps = useGetSteps(startDate, endDate)
   const dailyDistance = useGetDailyDistance(startDate, endDate)
   const sleepAnalysis = useGetSleepAnalysis(startDate, endDate)
   const water = useGetWater(startDate, endDate)
-  const weight = useGetWeight()
+  const weight = useGetWeight(startDate, endDate)
 
   return {
     activeTime,
@@ -29,52 +30,63 @@ export const useGetAllHealthData = (startDate?: string, endDate?: string) => {
   }
 }
 
-export const useGetActiveTime = (startDate?: string, endDate?: string) => {
+export const useGetActiveTime = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['activeTime', startDate, endDate],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.ACTIVE_TIME, startDate, endDate],
     queryFn: () => getActiveTime(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.quantity, 0) ?? 0,
   })
 }
 
-export const useGetCalories = (startDate?: string, endDate?: string) => {
+export const useGetCalories = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['calories', startDate, endDate],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.CALORIES, startDate, endDate],
     queryFn: () => getCalories(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.quantity, 0) ?? 0,
   })
 }
 
-export const useGetSteps = (startDate?: string, endDate?: string) => {
+export const useGetSteps = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['stepCount', startDate, endDate],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.STEPS, startDate, endDate],
     queryFn: () => getSteps(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.quantity, 0) ?? 0,
   })
 }
 
-export const useGetDailyDistance = (startDate?: string, endDate?: string) => {
+export const useGetDailyDistance = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['dailyDistance', startDate, endDate],
+    queryKey: [
+      QueryKey.HEALTH_DATA,
+      QueryKey.DAILY_DISTANCE,
+      startDate,
+      endDate,
+    ],
     queryFn: () => getDailyDistance(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.quantity, 0) ?? 0,
   })
 }
 
-export const useGetSleepAnalysis = (startDate?: string, endDate?: string) => {
+export const useGetSleepAnalysis = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['sleepAnalysis', startDate, endDate],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.SLEEP, startDate, endDate],
     queryFn: () => getSleepAnalysis(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.value, 0) ?? 0,
   })
 }
 
-export const useGetWater = (startDate?: string, endDate?: string) => {
+export const useGetWater = (startDate?: Date, endDate?: Date) => {
   return useQuery({
-    queryKey: ['water', startDate, endDate],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.WATER, startDate, endDate],
     queryFn: () => getWater(startDate, endDate),
+    select: (data) => data?.reduce((acc, curr) => acc + curr.quantity, 0) ?? 0,
   })
 }
 
-// getWeight doesn’t use dates, but we keep the signature for consistency
-export const useGetWeight = (_startDate?: string, _endDate?: string) => {
+export const useGetWeight = (_startDate?: Date, _endDate?: Date) => {
   return useQuery({
-    queryKey: ['weight'],
+    queryKey: [QueryKey.HEALTH_DATA, QueryKey.WEIGHT],
     queryFn: () => getWeight(),
+    select: (data) => data?.at(-1)?.quantity ?? 0,
   })
 }

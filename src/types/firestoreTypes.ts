@@ -32,3 +32,15 @@ export type GoalData = {
   value: string
   unit: string
 }
+
+export type UserProfileInfo = {
+  uid: string
+  key: string
+  value: string
+}
+
+export type UserProfileInfoInput = {
+  uid: string
+  key: string
+  value: string
+}

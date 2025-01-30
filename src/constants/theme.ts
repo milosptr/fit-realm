@@ -38,6 +38,8 @@ export const theme: Theme = {
     light: {
       text: '#101828',
       background: '#FCFCFD',
+      tabsBackground: '#ffffff',
+      tabsBorder: '#d0d5dd',
       card: '#ededf3',
       tint: '#354AD9',
       inactive: '#667085',
@@ -45,14 +47,21 @@ export const theme: Theme = {
     dark: {
       text: '#FCFCFD',
       background: '#090d16',
+      tabsBackground: '#090d16',
+      tabsBorder: '#344054',
       card: '#101828',
-      tint: '#FCFCFD',
+      tint: '#6273E2',
       inactive: '#667085',
     },
   },
   containers: {
     centered: {
       flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    rowCentered: {
+      flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -64,6 +73,9 @@ export const theme: Theme = {
       paddingTop: 24,
       paddingBottom: 24,
     },
+  },
+  centerText: {
+    textAlign: 'center',
   },
 }
 

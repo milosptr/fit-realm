@@ -3,17 +3,18 @@ import {
   getCollectionData,
   getCollectionDataByUserId,
 } from '@/src/services/firestoreService'
+import { QueryKey } from '@/src/constants/queryKey'
 
 export const useWorkouts = () => {
   return useQuery({
-    queryKey: ['workouts'],
+    queryKey: [QueryKey.WORKOUTS],
     queryFn: () => getCollectionData('workouts'),
   })
 }
 
 export const useUserWorkouts = (userId?: string) => {
   return useQuery({
-    queryKey: ['workouts', userId],
+    queryKey: [QueryKey.WORKOUTS, QueryKey.USER_WORKOUTS, userId],
     queryFn: () => getCollectionDataByUserId(`UserWorkouts`, userId!),
     enabled: !!userId,
   })

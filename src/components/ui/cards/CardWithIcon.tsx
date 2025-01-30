@@ -4,6 +4,7 @@ import { useColorScheme } from '@/src/hooks/useColorScheme'
 import { ThemedText } from '@/src/components/ThemedText'
 import theme from '@/src/constants/theme'
 import StepsIcon from '@/src/assets/icons/StepsIcon'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 type Props = {
   title: string
@@ -20,10 +21,9 @@ export const CardWithIcon = ({
   childrenContainerProps,
   viewProps,
 }: Props) => {
-  // TODO: Implement color scheme
-  const colorScheme = useColorScheme()
+  const colors = useThemeColor()
   const bgColor = {
-    backgroundColor: theme.colors[colorScheme ?? 'light'].card,
+    backgroundColor: colors.card,
   }
 
   return (

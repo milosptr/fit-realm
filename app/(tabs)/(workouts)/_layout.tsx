@@ -1,18 +1,17 @@
-import { StyleSheet, useColorScheme } from 'react-native'
-import theme from '@/src/constants/theme'
+import { StyleSheet } from 'react-native'
 import { Tabs } from 'expo-router'
 import { HapticTab } from '@/src/components/HapticTab'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 export default function WorkoutsScreen() {
-  const colorScheme = useColorScheme()
-  const colors = theme.colors[colorScheme || 'light']
+  const colors = useThemeColor()
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: theme.colors.white,
+          backgroundColor: colors.tabsBackground,
         },
         tabBarButton: HapticTab,
         tabBarActiveTintColor: colors.tint,

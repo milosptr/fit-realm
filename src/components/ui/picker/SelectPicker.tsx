@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { SelectOption } from '@/src/types/componentTypes'
 import theme from '@/src/constants/theme'
 import { ThemedText } from '@/src/components/ThemedText'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 type Props = {
   visible: boolean
@@ -22,6 +23,7 @@ export const SelectPicker = ({
   onValueChange,
   onClose,
 }: Props) => {
+  const colors = useThemeColor()
   const [selected, setSelected] = useState(selectedValue)
 
   const handleDone = () => {
@@ -43,11 +45,18 @@ export const SelectPicker = ({
         activeOpacity={1}
         onPress={onClose}
       />
-      <View style={styles.pickerContainer}>
-        <View style={styles.pickerHeader}>
-          <ThemedText style={styles.label}>{label}</ThemedText>
+      <View
+        style={[
+          styles.pickerContainer,
+          { backgroundColor: colors.tabsBackground },
+        ]}
+      >
+        <View style={[styles.pickerHeader, { borderColor: colors.tabsBorder }]}>
+          <ThemedText weight={'medium'}>{label}</ThemedText>
           <TouchableOpacity onPress={handleDone}>
-            <Text style={styles.doneButton}>Done</Text>
+            <ThemedText weight={'semibold'} style={{ color: colors.tint }}>
+              Done
+            </ThemedText>
           </TouchableOpacity>
         </View>
         <Picker selectedValue={selected} onValueChange={setSelected}>
@@ -71,26 +80,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
   },
   pickerContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     paddingBottom: 20,
   },
   pickerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    alignItems: 'flex-end',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  label: {
-    color: theme.colors.darkGray,
-    fontWeight: '500',
-    fontSize: 16,
-  },
-  doneButton: {
-    color: theme.colors.primary,
-    fontWeight: 'bold',
-    fontSize: 16,
+    borderTopWidth: 1,
   },
 })

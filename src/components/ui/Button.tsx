@@ -32,7 +32,10 @@ export const Button = ({
         ...styles.button,
         ...styles[variant],
         ...style,
-        ...(disabled && { backgroundColor: theme.colors.primaryLightest }),
+        ...(disabled && {
+          backgroundColor: theme.colors.primaryLightest,
+          opacity: 0.5,
+        }),
         ...(pressed &&
           !disabled && { backgroundColor: theme.colors.primaryDark }),
       })}

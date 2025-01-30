@@ -10,6 +10,8 @@ import { db } from '@/src/services/firebaseConfig'
 import {
   GoalData,
   UserGoalInput,
+  UserProfileInfo,
+  UserProfileInfoInput,
   UserWorkoutType,
   WorkoutType,
 } from '@/src/types/firestoreTypes'
@@ -46,6 +48,27 @@ export const saveUserGoal = async ({ data, ...input }: UserGoalInput) => {
         ...input,
         unit: data.unit,
       })
+      resolve(data)
+    } catch (reason) {
+      reject(reason)
+    }
+  })
+}
+
+export const getUserProfile = async (userId?: string) => {
+  if (!userId) return []
+
+  const q = query(collection(db, 'UserProfile'), where('uid', '==', userId))
+  const docs = await getDocs(q)
+  return docs.docs.map((doc) => doc.data())
+}
+
+export const saveUserProfileInfo = async (
+  data: UserProfileInfoInput
+): Promise<UserProfileInfo> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await setDoc(doc(db, 'UserProfile', `${data.uid}_${data.key}`), data)
       resolve(data)
     } catch (reason) {
       reject(reason)

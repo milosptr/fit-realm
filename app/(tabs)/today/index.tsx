@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { RefreshControl, StyleSheet } from 'react-native'
 
 import { ThemedText } from '@/src/components/ThemedText'
 import { ThemedView } from '@/src/components/ThemedView'
@@ -9,44 +9,55 @@ import { ScreenView } from '@/src/components/ScreenView'
 import { useCurrentAuthUser } from '@/src/hooks/useAuth'
 import { useUserGoals } from '@/src/hooks/useGoals'
 import { useGetAllHealthData } from '@/src/hooks/health/useHealthHooks'
-import { HealthActivitySummary, HealthValue } from 'react-native-health'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { QueryKey } from '@/src/constants/queryKey'
 
 export default function TodayScreen() {
+  const queryClient = useQueryClient()
+  const [refreshing, setRefreshing] = useState(false)
+
   const { data: user } = useCurrentAuthUser()
   const { data: goals } = useUserGoals(user?.uid)
   const healthData = useGetAllHealthData()
 
-  const sumHealthData = (data?: HealthValue[]) => {
-    return data?.reduce((acc, curr) => acc + curr.value, 0) || 0
-  }
-
-  const sumHealthActivityData = (data?: HealthActivitySummary[]) => {
-    return data?.reduce((acc, curr) => acc + curr.appleExerciseTime, 0) || 0
-  }
-
   const getGoalHealthData = (key: Goals) => {
     switch (key) {
       case Goals.CALORIES:
-        return sumHealthData(healthData?.calories?.data)
+        return healthData?.calories?.data || 0
       case Goals.WATER:
-        return healthData?.water?.data?.value || 0
+        return healthData?.water?.data || 0
       case Goals.SLEEP:
-        return sumHealthData(healthData?.sleepAnalysis?.data)
+        return healthData?.sleepAnalysis?.data || 0
       case Goals.STEPS:
-        return healthData?.steps?.data?.value || 0
+        return healthData?.steps?.data || 0
       case Goals.DAILY_DISTANCE:
-        return sumHealthData(healthData?.dailyDistance?.data)
+        return healthData?.dailyDistance?.data || 0
       case Goals.ACTIVE_TIME:
-        return sumHealthActivityData(healthData?.activeTime?.data)
+        return healthData?.activeTime?.data || 0
       case Goals.WEIGHT:
-        return healthData?.weight?.data?.value || 0
+        return healthData?.weight?.data || 0
       default:
         return 0
     }
   }
 
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: [QueryKey.HEALTH_DATA] }),
+      queryClient.invalidateQueries({ queryKey: [QueryKey.USER_GOALS] }),
+    ]).then(() => {
+      setRefreshing(false)
+    })
+  }
+
   return (
-    <ScreenView>
+    <ScreenView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
       <ThemedView style={styles.generalPadding}>
         <ThemedView style={[styles.headerContainer]}>
           <TodaysDate />

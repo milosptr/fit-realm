@@ -12,8 +12,10 @@ import { useCurrentAuthUser } from '@/src/hooks/useAuth'
 import { useUserGoals, useUserGoalsMutation } from '@/src/hooks/useGoals'
 import { mutateGoalData } from '@/src/utils/goalHelpers'
 import { useQueryClient } from '@tanstack/react-query'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 export const GoalsScreen = () => {
+  const colors = useThemeColor()
   const queryClient = useQueryClient()
   const { data: user } = useCurrentAuthUser()
   const { data: userGoals } = useUserGoals(user?.uid)
@@ -95,7 +97,14 @@ export const GoalsScreen = () => {
         <ThemedText size={'base'} weight={'medium'} style={{ marginTop: 6 }}>
           Set your goals and track your progress!
         </ThemedText>
-        <View style={styles.initialBorder}>
+        <View
+          style={[
+            styles.initialBorder,
+            {
+              borderColor: colors.tabsBorder,
+            },
+          ]}
+        >
           <FlatList
             scrollEnabled={false}
             data={goals}
@@ -108,20 +117,22 @@ export const GoalsScreen = () => {
             keyExtractor={(item) => item.key}
           />
         </View>
-        <Button
-          text={'Save goals'}
-          disabled={!isEdited || isPending}
-          style={styles.saveButton}
-          onPress={handleSaveGoals}
-        />
         {isEdited && (
-          <Button
-            variant={'primary-outline'}
-            text={'Cancel'}
-            disabled={!isEdited || isPending}
-            style={styles.cancelButton}
-            onPress={handleResetGoals}
-          />
+          <>
+            <Button
+              text={'Save goals'}
+              disabled={!isEdited || isPending}
+              style={styles.saveButton}
+              onPress={handleSaveGoals}
+            />
+            <Button
+              variant={'primary-outline'}
+              text={'Cancel'}
+              disabled={!isEdited || isPending}
+              style={styles.cancelButton}
+              onPress={handleResetGoals}
+            />
+          </>
         )}
       </ThemedView>
     </ScreenView>
@@ -131,7 +142,6 @@ export const GoalsScreen = () => {
 const styles = StyleSheet.create({
   initialBorder: {
     borderTopWidth: 1,
-    borderTopColor: theme.colors.lightGray,
     marginTop: 32,
   },
   saveButton: {

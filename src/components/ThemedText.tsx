@@ -5,18 +5,22 @@ import { ThemedTextProps } from '@/src/types/componentTypes'
 
 export function ThemedText({
   style,
-  lightColor,
-  darkColor,
   type = 'default',
   size = 'base',
   weight = 'normal',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text')
+  const color = useThemeColor()
 
   return (
     <Text
-      style={[{ color }, styles[size], styles[weight], styles[type], style]}
+      style={[
+        { color: color.text },
+        styles[size],
+        styles[weight],
+        styles[type],
+        style,
+      ]}
       {...rest}
     />
   )

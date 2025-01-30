@@ -1,168 +1,141 @@
-import BrokenHealthKit, {
-  HealthActivitySummary,
-  HealthKitPermissions,
-  HealthValue,
-} from 'react-native-health'
-
-const AppleHealthKit = require('react-native').NativeModules
-  .AppleHealthKit as typeof BrokenHealthKit
-AppleHealthKit.Constants = BrokenHealthKit.Constants
+import HealthKit, {
+  HKQuantityTypeIdentifier,
+  HKCategoryTypeIdentifier,
+  HKAuthorizationRequestStatus,
+  queryQuantitySamples,
+  queryCategorySamples,
+  GenericQueryOptions,
+} from '@kingstinct/react-native-healthkit'
 
 const permissions = {
-  permissions: {
-    read: [
-      AppleHealthKit.Constants.Permissions.HeartRate,
-      AppleHealthKit.Constants.Permissions.Steps,
-      AppleHealthKit.Constants.Permissions.StepCount,
-      AppleHealthKit.Constants.Permissions.DistanceWalkingRunning,
-      AppleHealthKit.Constants.Permissions.ActiveEnergyBurned,
-      AppleHealthKit.Constants.Permissions.Water,
-      AppleHealthKit.Constants.Permissions.SleepAnalysis,
-      AppleHealthKit.Constants.Permissions.Workout,
-      AppleHealthKit.Constants.Permissions.Weight,
-      AppleHealthKit.Constants.Permissions.ActivitySummary,
-    ],
-    write: [],
-  },
-} as HealthKitPermissions
-
-export const initHealthKit = () => {
-  console.log('[INFO] Initializing HealthKit...')
-  return new Promise<void>((resolve, reject) => {
-    AppleHealthKit.initHealthKit(permissions, (error: string) => {
-      if (error) {
-        console.log('[ERROR] Cannot grant permissions!', error)
-        reject(error)
-        return
-      }
-      console.log('[INFO] HealthKit initialized successfully!')
-      resolve()
-    })
-  })
+  read: [
+    HKQuantityTypeIdentifier.heartRate,
+    HKQuantityTypeIdentifier.stepCount,
+    HKQuantityTypeIdentifier.distanceWalkingRunning,
+    HKQuantityTypeIdentifier.activeEnergyBurned,
+    HKQuantityTypeIdentifier.dietaryWater,
+    HKCategoryTypeIdentifier.sleepAnalysis,
+    HKQuantityTypeIdentifier.bodyMass,
+    HKQuantityTypeIdentifier.appleExerciseTime,
+  ],
+  write: [],
 }
 
-/**
- * Reusable helper to call an AppleHealthKit method that takes:
- *   - { startDate, endDate } or an empty object
- *   - (error, results) => void callback
- */
-function fetchHealthData<T>(
-  fetchFn: (
-    params: Record<string, unknown>,
-    callback: (error: string, results: T) => void
-  ) => void,
-  {
-    startDate,
-    endDate,
-    logLabel,
-  }: {
-    startDate?: string
-    endDate?: string
-    logLabel: string
-  },
-  useDateRange: boolean = true
-): Promise<T> {
-  // If date range is used, provide defaults
-  const start =
-    startDate || new Date(new Date().setHours(0, 0, 0, 0)).toISOString()
-  const end = endDate || new Date().toISOString()
-
-  // If we need date range, pass them in; otherwise pass an empty object
-  const params = useDateRange ? { startDate: start, endDate: end } : {}
-
-  return new Promise((resolve, reject) => {
-    fetchFn(params, (error: string, results: T) => {
-      if (error) {
-        console.log(`[ERROR] Failed to fetch ${logLabel}!`, error)
-        reject(error)
-      } else {
-        resolve(results)
-      }
-    })
-  })
-}
-
-/**
- * 1. Activity summary with date range
- */
-export function getActiveTime(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthActivitySummary[]>(
-    AppleHealthKit.getActivitySummary,
-    {
-      startDate,
-      endDate,
-      logLabel: 'activity summary',
+export const initHealthKit = async (): Promise<void> => {
+  try {
+    console.log('[INFO] Initializing HealthKit...')
+    const status = await HealthKit.getRequestStatusForAuthorization(
+      permissions.read
+    )
+    if (status === HKAuthorizationRequestStatus.unnecessary) {
+      console.log('[INFO] Already authorized!')
+      return
     }
-  )
+    await HealthKit.requestAuthorization(permissions.read, permissions.write)
+    console.log('[INFO] HealthKit initialized successfully!')
+  } catch (error) {
+    console.error('[ERROR] Cannot grant permissions!', error)
+    throw error
+  }
 }
 
-/**
- * 2. Active energy burned (calories) with date range
- */
-export function getCalories(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthValue[]>(AppleHealthKit.getActiveEnergyBurned, {
-    startDate,
-    endDate,
-    logLabel: 'calories',
-  })
+const getQueryOptions = (
+  startDate?: Date,
+  endDate?: Date,
+  useDateRange = true
+): GenericQueryOptions => {
+  const start = startDate || new Date(new Date().setHours(0, 0, 0, 0))
+  const end = endDate || new Date()
+  return useDateRange ? { from: start, to: end } : {}
 }
 
-/**
- * 3. Steps count with date range
- */
-export function getSteps(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthValue>(AppleHealthKit.getStepCount, {
-    startDate,
-    endDate,
-    logLabel: 'steps',
-  })
+export const getActiveTime = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.appleExerciseTime,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getActiveTime failed to fetch samples!')
+    return []
+  }
 }
 
-/**
- * 4. Daily distance with date range
- */
-export function getDailyDistance(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthValue[]>(
-    AppleHealthKit.getDailyDistanceWalkingRunningSamples,
-    {
-      startDate,
-      endDate,
-      logLabel: 'daily distance',
-    }
-  )
+export const getCalories = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.activeEnergyBurned,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getCalories failed to fetch samples!')
+    return []
+  }
 }
 
-/**
- * 5. Sleep samples with date range
- */
-export function getSleepAnalysis(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthValue[]>(AppleHealthKit.getSleepSamples, {
-    startDate,
-    endDate,
-    logLabel: 'sleep samples',
-  })
+export const getSteps = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.stepCount,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getSteps failed to fetch samples!')
+    return []
+  }
 }
 
-/**
- * 6. Water intake with date range
- */
-export function getWater(startDate?: string, endDate?: string) {
-  return fetchHealthData<HealthValue>(AppleHealthKit.getWater, {
-    startDate,
-    endDate,
-    logLabel: 'water samples',
-  })
+export const getDailyDistance = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.distanceWalkingRunning,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getDailyDistance failed to fetch samples!')
+    return []
+  }
 }
 
-/**
- * 7. Weight - no date range needed, so pass `useDateRange: false`
- */
-export function getWeight() {
-  return fetchHealthData<HealthValue>(
-    AppleHealthKit.getLatestWeight,
-    {
-      logLabel: 'weight',
-    },
-    false
-  )
+export const getSleepAnalysis = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryCategorySamples(
+      HKCategoryTypeIdentifier.sleepAnalysis,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getSleepAnalysis failed to fetch samples!')
+    return []
+  }
+}
+
+export const getWater = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.dietaryWater,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getWater failed to fetch samples!')
+    return []
+  }
+}
+
+export const getWeight = async (startDate?: Date, endDate?: Date) => {
+  try {
+    const options = getQueryOptions(startDate, endDate)
+    return await queryQuantitySamples(
+      HKQuantityTypeIdentifier.bodyMass,
+      options
+    )
+  } catch (e) {
+    console.log('[ERROR] getWeight failed to fetch samples!')
+    return []
+  }
 }

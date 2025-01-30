@@ -22,6 +22,16 @@ export type ColorTheme = {
   tabIconSelected: string
 }
 
+type ColorThemeScheme = {
+  text: string
+  background: string
+  tabsBackground: string
+  tabsBorder: string
+  card: string
+  tint: string
+  inactive: string
+}
+
 export type Theme = {
   fonts: {
     regular: object
@@ -43,24 +53,17 @@ export type Theme = {
     darkSlateGray: string
     darkGray: string
     white: string
-    light: {
-      text: string
-      background: string
-      card: string
-      tint: string
-      inactive: string
-    }
-    dark: {
-      text: string
-      background: string
-      card: string
-      tint: string
-      inactive: string
-    }
+    light: ColorThemeScheme
+    dark: ColorThemeScheme
   }
   containers: {
     centered: {
       flex: number
+      justifyContent: 'center'
+      alignItems: 'center'
+    }
+    rowCentered: {
+      flexDirection: 'row'
       justifyContent: 'center'
       alignItems: 'center'
     }
@@ -72,5 +75,8 @@ export type Theme = {
       paddingTop: number
       paddingBottom: number
     }
+  }
+  centerText: {
+    textAlign: 'center'
   }
 }

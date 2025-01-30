@@ -1,19 +1,17 @@
 import { Tabs } from 'expo-router'
 import React from 'react'
-import { Platform, useColorScheme } from 'react-native'
+import { Platform } from 'react-native'
 
 import { HapticTab } from '@/src/components/HapticTab'
-import TabBarBackground from '@/src/components/ui/tabs/TabBarBackground'
 import GoalsIcon from '@/src/assets/icons/GoalsIcon'
-import HomeIcon from '@/src/assets/icons/HomeIcon'
 import theme from '@/src/constants/theme'
 import WorkoutsIcon from '@/src/assets/icons/WorkoutsIcon'
 import UserIcon from '@/src/assets/icons/UserIcon'
 import CalendarTabIcon from '@/src/assets/icons/CalendarTabIcon'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme()
-  const colors = theme.colors[colorScheme || 'light']
+  const colors = useThemeColor()
 
   return (
     <Tabs
@@ -25,7 +23,8 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
-            backgroundColor: theme.colors.white,
+            backgroundColor: colors.tabsBackground,
+            borderTopColor: colors.tabsBorder,
           },
           default: {
             backgroundColor: theme.colors.white,

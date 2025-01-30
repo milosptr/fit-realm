@@ -1,9 +1,9 @@
 import { UserWorkoutType, WorkoutType } from '@/src/types/firestoreTypes'
 import { ThemedView } from '@/src/components/ThemedView'
 import { ThemedText } from '@/src/components/ThemedText'
-import { Image, StyleSheet, useColorScheme, View } from 'react-native'
-import theme from '@/src/constants/theme'
+import { Image, StyleSheet, View } from 'react-native'
 import { defaultWorkoutImage } from '@/src/constants/images'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 const isWorkoutType = (
   props: WorkoutType | UserWorkoutType
@@ -12,9 +12,9 @@ const isWorkoutType = (
 }
 
 export const SimpleWorkoutCard = (props: WorkoutType | UserWorkoutType) => {
-  const colorScheme = useColorScheme()
+  const colors = useThemeColor()
   const background = {
-    backgroundColor: theme.colors[colorScheme ?? 'light'].card,
+    backgroundColor: colors.card,
   }
 
   const name = isWorkoutType(props) ? props.name : props.workout

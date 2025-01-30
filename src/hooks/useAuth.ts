@@ -5,11 +5,39 @@ import {
   register,
   getOnAuthStateChanged,
 } from '@/src/services/authService'
+import { QueryKey } from '@/src/constants/queryKey'
+import {
+  getUserProfile,
+  saveUserProfileInfo,
+} from '@/src/services/firestoreService'
+import {
+  UserProfileInfo,
+  UserProfileInfoInput,
+} from '@/src/types/firestoreTypes'
+import { MutationOptions } from '@/src/types/queryTypes'
 
 export const useCurrentAuthUser = () => {
   return useQuery({
-    queryKey: ['currentAuthUser'],
+    queryKey: [QueryKey.CURRENT_USER],
     queryFn: getOnAuthStateChanged,
+  })
+}
+
+export const useUserInfo = (uid?: string) => {
+  return useQuery({
+    queryKey: [QueryKey.USER_INFO],
+    queryFn: () => getUserProfile(uid),
+    enabled: !!uid,
+  })
+}
+
+export const useUserInfoMutation = (
+  options?: MutationOptions<UserProfileInfo, UserProfileInfoInput>
+) => {
+  return useMutation({
+    mutationKey: [QueryKey.USER_INFO],
+    mutationFn: (data: UserProfileInfoInput) => saveUserProfileInfo(data),
+    ...options,
   })
 }
 
@@ -20,7 +48,7 @@ export const useLoginMutation = () => {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       login(email, password),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentAuthUser'] })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.CURRENT_USER] })
     },
   })
 }
@@ -32,7 +60,7 @@ export const useRegisterMutation = () => {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       register(email, password),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentAuthUser'] })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.CURRENT_USER] })
     },
   })
 }
@@ -43,7 +71,7 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentAuthUser'] })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.CURRENT_USER] })
     },
   })
 }
