@@ -6,22 +6,23 @@ import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 export const SupportInfo = () => {
   const colors = useThemeColor()
+  const borderColor = { borderBottomColor: colors.tabsBorder }
 
   return (
-    <View style={styles.sectionContainer}>
+    <View style={[styles.sectionContainer, borderColor]}>
       <ThemedText size={'lg'} weight={'semibold'}>
         Support
       </ThemedText>
       <View>
-        <View style={styles.sectionSupportItem}>
+        <View style={[styles.sectionSupportItem, borderColor]}>
           <ThemedText>Help Center</ThemedText>
           <ArrowRightIcon fill={colors.text} />
         </View>
-        <View style={styles.sectionSupportItem}>
+        <View style={[styles.sectionSupportItem, borderColor]}>
           <ThemedText>Terms of Use</ThemedText>
           <ArrowRightIcon fill={colors.text} />
         </View>
-        <View style={styles.sectionSupportItem}>
+        <View style={[styles.sectionSupportItem, borderColor]}>
           <ThemedText>Privacy Policy</ThemedText>
           <ArrowRightIcon fill={colors.text} />
         </View>
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
   },
   sectionItem: {
     borderTopWidth: 1,
-    borderTopColor: theme.colors.lightGray,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 8,
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     paddingVertical: 6,
     paddingHorizontal: 4,
   },

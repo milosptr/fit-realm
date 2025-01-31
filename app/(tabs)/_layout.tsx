@@ -9,6 +9,7 @@ import WorkoutsIcon from '@/src/assets/icons/WorkoutsIcon'
 import UserIcon from '@/src/assets/icons/UserIcon'
 import CalendarTabIcon from '@/src/assets/icons/CalendarTabIcon'
 import { useThemeColor } from '@/src/hooks/useThemeColor'
+import ProgramsIcon from '@/src/assets/icons/ProgramsIcon'
 
 export default function TabLayout() {
   const colors = useThemeColor()
@@ -40,10 +41,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='(workouts)'
+        name='(programs)'
         options={{
-          title: 'Workouts',
-          tabBarIcon: ({ color }) => <WorkoutsIcon fill={color} />,
+          title: 'Programs',
+          tabBarIcon: ({ color }) => <ProgramsIcon fill={color} />,
         }}
       />
       <Tabs.Screen

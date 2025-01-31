@@ -44,3 +44,37 @@ export type UserProfileInfoInput = {
   key: string
   value: string
 }
+
+// TODO: Adjust the types to match the actual data structure
+export type Exercise = {
+  id: string // Unique identifier for the exercise
+  name?: string // Optional: Exercise name if needed
+  sets?: number // Number of sets
+  reps?: number // Number of reps per set
+  rest_time?: number // Rest time in seconds
+  duration?: number // Duration in seconds (for timed exercises like planks)
+  weight?: 'user_defined' | 'bodyweight' | number // Weight type or actual value
+}
+
+export type WorkoutDay = {
+  day: number
+  name?: string
+  rest_day?: boolean
+  exercises?: Exercise[]
+}
+
+export type Program = {
+  id: string
+  name: string
+  description: string
+  full_description: string
+  duration_weeks: number
+  difficulty: string
+  goal: string
+  frequency_per_week: number
+  cover_image?: string
+  tags: string[]
+  exercises: WorkoutDay[]
+  createdAt: Date
+  updatedAt: Date
+}

@@ -80,6 +80,11 @@ export default function TodayScreen() {
               />
             ))}
         </ThemedView>
+        <ThemedView style={styles.activitySection}>
+          <ThemedText size={'xl'} weight={'semibold'}>
+            Log your next activity 💪
+          </ThemedText>
+        </ThemedView>
       </ThemedView>
     </ScreenView>
   )
@@ -96,6 +101,11 @@ const styles = StyleSheet.create({
   },
   progressCard: {
     marginTop: 12,
-    gap: 12,
+    gap: '4%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  activitySection: {
+    marginTop: 24,
   },
 })

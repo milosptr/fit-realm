@@ -25,6 +25,7 @@ export const ProfileInfoItem = ({ item }: Props) => {
   const [currentValue, setCurrentValue] = useState('')
 
   const textColor = item.__dirty ? theme.colors.warning : colors.text
+  const borderColor = { borderBottomColor: colors.tabsBorder }
 
   useEffect(() => {
     setCurrentValue(item.value || '')
@@ -49,7 +50,7 @@ export const ProfileInfoItem = ({ item }: Props) => {
 
   return (
     <>
-      <View style={styles.profileItem}>
+      <View style={[styles.profileItem, borderColor]}>
         <ThemedText>{item.label}</ThemedText>
         <Pressable disabled={item.__disabled} onPress={() => setEdit(true)}>
           {({ pressed }) => (
@@ -91,7 +92,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     paddingVertical: 10,
     paddingHorizontal: 4,
   },

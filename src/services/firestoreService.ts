@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -16,9 +17,21 @@ import {
   WorkoutType,
 } from '@/src/types/firestoreTypes'
 
-export const getCollectionData = async (path: string) => {
+export const getCollectionData = async <T>(path: string): Promise<T> => {
   const docs = await getDocs(collection(db, path))
-  return docs.docs.map((doc) => doc.data()) as WorkoutType[]
+  return docs.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as T
+}
+
+export const getDocumentData = async <T>(
+  path: string,
+  id: string
+): Promise<T> => {
+  const docRef = doc(db, path, id)
+  const docSnap = await getDoc(docRef)
+  return docSnap.data() as T
 }
 
 export const getCollectionDataByUserId = async (
@@ -27,7 +40,10 @@ export const getCollectionDataByUserId = async (
 ) => {
   const q = query(collection(db, path), where('uid', '==', userId.toString()))
   const docs = await getDocs(q)
-  return docs.docs.map((doc) => doc.data()) as UserWorkoutType[]
+  return docs.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
 }
 
 export const getUserGoals = async (userId?: string): Promise<GoalData[]> => {

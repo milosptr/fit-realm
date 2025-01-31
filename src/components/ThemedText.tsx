@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   base: {
     fontSize: 15,
-    lineHeight: 15,
+    lineHeight: 18,
   },
   md: {
     fontSize: 17,

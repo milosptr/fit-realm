@@ -24,16 +24,16 @@ export const goalName = {
   [Goals.ACTIVE_DAYS]: 'Active Days',
   [Goals.CALORIES]: 'Daily Calories',
   [Goals.DAILY_DISTANCE]: 'Daily Distance',
-  [Goals.SLEEP]: 'Sleep',
+  [Goals.SLEEP]: 'Sleep Analysis',
   [Goals.STEPS]: 'Daily Steps',
   [Goals.WATER]: 'Water Intake',
   [Goals.WEIGHT]: 'Desired Weight',
 }
 
 export const goalUnit = {
-  [Goals.ACTIVE_TIME]: 'minutes',
+  [Goals.ACTIVE_TIME]: 'min',
   [Goals.ACTIVE_DAYS]: 'days',
-  [Goals.CALORIES]: 'calories',
+  [Goals.CALORIES]: 'kcal',
   [Goals.DAILY_DISTANCE]: 'km',
   [Goals.SLEEP]: 'hours',
   [Goals.STEPS]: 'steps',

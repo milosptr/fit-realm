@@ -1,5 +1,4 @@
 import { StyleSheet, View, ViewProps } from 'react-native'
-import { PieChart } from 'react-native-gifted-charts'
 import { ThemedText } from '@/src/components/ThemedText'
 import theme from '@/src/constants/theme'
 import { goalIcon } from '@/src/constants/goals'
@@ -23,12 +22,6 @@ export const ProgressCard = ({
   goal = 0,
   viewProps,
 }: Props) => {
-  const percentage = Math.round((value / goal) * 100)
-  const pieData = [
-    { value: percentage, color: theme.colors.primary },
-    { value: 100 - percentage, color: theme.colors.primaryLightest },
-  ]
-
   const colors = useThemeColor()
   const bgColor = {
     backgroundColor: colors.card,
@@ -42,7 +35,11 @@ export const ProgressCard = ({
         <View style={styles.info}>
           <View style={styles.labelContainer}>
             <GoalIcon fill={theme.colors.primary} />
-            <ThemedText weight={'medium'} style={{ marginTop: 5 }}>
+            <ThemedText
+              size={'md'}
+              weight={'semibold'}
+              style={{ marginTop: 5 }}
+            >
               {label}
             </ThemedText>
           </View>
@@ -56,22 +53,6 @@ export const ProgressCard = ({
             <ThemedText weight={'bold'}>{unit}</ThemedText>
           </View>
         </View>
-        <View style={styles.chartContainer}>
-          <PieChart
-            donut
-            radius={30}
-            innerRadius={20}
-            innerCircleColor={bgColor.backgroundColor}
-            data={pieData}
-            centerLabelComponent={() => {
-              return (
-                <ThemedText weight={'medium'} size={'sm'}>
-                  {percentage}%
-                </ThemedText>
-              )
-            }}
-          />
-        </View>
       </View>
     </View>
   )
@@ -79,25 +60,19 @@ export const ProgressCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    padding: 12,
+    width: '48%',
+    paddingHorizontal: 12,
+    paddingVertical: 16,
     borderRadius: 8,
   },
   progressContainer: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  chartContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: '25%',
-    height: '100%',
-  },
   info: {
-    width: '50%',
     flexDirection: 'column',
-    gap: 8,
+    gap: 16,
   },
   valueContainer: {
     flexDirection: 'row',

@@ -2,23 +2,27 @@ import { ThemedText } from '@/src/components/ThemedText'
 import { StyleSheet, View } from 'react-native'
 import theme from '@/src/constants/theme'
 import { version } from '@/package.json'
+import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 export const SettingsInfo = () => {
+  const colors = useThemeColor()
+  const borderColor = { borderBottomColor: colors.tabsBorder }
+
   return (
-    <View style={styles.sectionContainer}>
+    <View style={[styles.sectionContainer, borderColor]}>
       <ThemedText size={'lg'} weight={'semibold'}>
         Settings
       </ThemedText>
       <View>
-        <View style={styles.sectionSettingItem}>
+        <View style={[styles.sectionSettingItem, borderColor]}>
           <ThemedText>Subscription</ThemedText>
           <ThemedText>Free</ThemedText>
         </View>
-        <View style={styles.sectionSettingItem}>
+        <View style={[styles.sectionSettingItem, borderColor]}>
           <ThemedText>App Language</ThemedText>
           <ThemedText>English</ThemedText>
         </View>
-        <View style={styles.sectionSettingItem}>
+        <View style={[styles.sectionSettingItem, borderColor]}>
           <ThemedText>App Version</ThemedText>
           <ThemedText>{version}</ThemedText>
         </View>
@@ -33,7 +37,6 @@ const styles = StyleSheet.create({
   },
   sectionItem: {
     borderTopWidth: 1,
-    borderTopColor: theme.colors.lightGray,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 8,
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     paddingVertical: 10,
     paddingHorizontal: 4,
   },

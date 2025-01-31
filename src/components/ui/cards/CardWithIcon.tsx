@@ -7,7 +7,7 @@ import StepsIcon from '@/src/assets/icons/StepsIcon'
 import { useThemeColor } from '@/src/hooks/useThemeColor'
 
 type Props = {
-  title: string
+  title?: string
   icon?: ReactNode
   viewProps?: ViewProps
   childrenContainerProps?: ViewProps
@@ -29,9 +29,11 @@ export const CardWithIcon = ({
   return (
     <View {...viewProps} style={[styles.card, bgColor, viewProps?.style]}>
       <View style={styles.header}>
-        <ThemedText weight={'semibold'} style={styles.title}>
-          {title}
-        </ThemedText>
+        {!!title && (
+          <ThemedText weight={'semibold'} style={styles.title}>
+            {title}
+          </ThemedText>
+        )}
         {icon}
       </View>
       <View {...childrenContainerProps}>{children}</View>
